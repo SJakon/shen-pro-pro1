@@ -1,0 +1,60 @@
+#include<reg51.h>
+
+sbit key=P3^7;
+unsigned char i=0,j=0,k=0;
+unsigned char aa[10]={0x3F,0x06,0x5b,0x4f,0x66,0x6d,0x7d,0x07,0x7f,0x6f};
+unsigned char flg=0,flg1=0,flg2=0,flg3=0;
+unsigned char tex1,tex2;
+
+void timer(){	                //开中断函数
+	EA=1;
+	ET0=1; }
+
+void state(){                  //IO口跳沿检测函数
+	tex1=tex2;
+	tex2=key;
+	if(tex2==0&&tex1!=0) flg1=1;
+	else flg1=0;}
+
+int outpr(int a){				//右侧数码管显示函数
+	P2=aa[a];
+	if(a==9) a=0;
+	else a++;
+	return a;}
+
+int outpl(int a){				//左侧数码管显示函数
+	P0=aa[a];
+	if(a==9) a=0;
+	else a++;
+	return a;}
+
+void main(){
+	P2=aa[0];  P0=aa[0];		//程序开始时数码管显示00
+	TMOD=0X01;					//设定计时器工作状态
+	TH0=0XFC;  TL0=0X18;	    //设定计时器初值
+	timer();					//打开中断
+	while(1) {
+		state();
+		flg=flg1+flg2+flg3;		
+		switch(flg){					          //判断按键状态
+			case 1:{flg1=0;flg2=3;		          //如果秒表已经清零则开始
+					TR0=1;break;}	      
+			case 4:{flg1=0;flg2=0;flg3=5;		  //如果秒表正在运行则暂停
+					TR0=0;break;}		  
+			case 6:{flg1=0;flg2=0;flg3=0;		  //如果秒表暂停则清零
+					k=0;j=0;
+					P0=aa[k];P2=aa[j];break;}	  
+	}}}
+
+void T0_int(void) interrupt 1 using 0{	  //计时中断
+    i++;
+	if(i>=100){							  //计时100个周期计数一次
+		j=outpr(j);						  //右侧数码管输出
+		if(j==1) 
+			k=outpl(k);					  //左侧数码管输出
+		i=0;}
+	TH0=0XFC;  TL0=0X18;				  //重装计数初值
+ }
+
+
+
