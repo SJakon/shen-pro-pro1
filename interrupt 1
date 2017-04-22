@@ -1,0 +1,41 @@
+#include <reg51.h>
+ 
+ void delay(unsigned int k){ //延时函数
+   unsigned int i;
+   unsigned int j;
+   for(i=0;i<k;i++)
+     for(j=0;j<400;j++)	    
+       ;}					//延时空循环
+
+ void main(){  	            //主函数是跑马灯程序
+	unsigned int aa;
+	unsigned int bb;
+	unsigned int light[8]={0X01,0X02,0X04,0X08,0X10,0X20,0X40,0X00}; //按序显示数码管
+	EA=1;
+    EX0=1;
+    IT0=0;			        //开中断
+    while(1){	     	    //跑马灯无限循环
+	aa=0;
+	  for(bb=0;bb<8;bb++)   //依次进位显示
+ 	    {P1=light[aa];
+	     aa++;
+   	     delay(100);}}}
+   
+ void int0 (void) interrupt 0 using 0  {	                        //中断函数是7位闪烁程序 
+   unsigned int cc;
+   while(1){
+     P1=0XFF;
+	 delay(100);
+	 P1=0X00;
+	 delay(100);			//全7位闪烁
+	 if(P3^2==1)  {			//如果变为INT0高电平，则准备跳出中断
+	   for(cc=0;cc<5;cc++)	//全闪烁循环5次
+	     {P1=0XFF;
+	      delay(100);
+	      P1=0X00;
+	      delay(100);}
+	      if(P3^2==1)		//如果INT0仍为高电平则跳出循环
+		    break;}}}
+
+
+
