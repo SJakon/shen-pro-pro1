@@ -1,0 +1,27 @@
+#include <reg51.h>
+	  
+	   sbit key1=P2^0;
+	   sbit key2=P2^1;
+	   sbit key3=P2^2;
+	   sbit key4=P2^3;
+   
+   void main(){
+
+while(1){
+
+if(key1==0&&key2!=0&&key3!=0&&key4!=0)
+             {P1=0X06; break;}
+
+if(key2==0&&key1!=0&&key3!=0&&key4!=0)
+			 {P1=0X5B; break;}
+
+if(key3==0&&key2!=0&&key1!=0&&key4!=0)
+			 {P1=0X4F; break;}
+
+if(key4==0&&key2!=0&&key3!=0&&key1!=0)
+			 {P1=0X66; break;}
+
+else
+			 P1=0X3F; 
+			 
+			 }  }
